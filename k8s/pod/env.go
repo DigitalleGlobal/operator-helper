@@ -17,7 +17,7 @@
 package pod
 
 import (
-	"github.com/fixsl/operator-helper/k8s"
+	"github.com/FixSolution/operator-helper/k8s"
 	v1 "k8s.io/api/core/v1"
 )
 

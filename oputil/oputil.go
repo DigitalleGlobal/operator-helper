@@ -20,7 +20,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"log"
 	"math"
 	"os"

@@ -18,7 +18,7 @@ package webhook
 
 import (
 	"fmt"
-	"github.com/fixsl/operator-helper/config"
+	"github.com/FixSolution/operator-helper/config"
 	"k8s.io/apimachinery/pkg/runtime"
 	"log"
 	ctrl "sigs.k8s.io/controller-runtime"

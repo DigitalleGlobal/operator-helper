@@ -17,7 +17,7 @@
 package secret
 
 import (
-	"github.com/fixsl/operator-helper/oputil"
+	"github.com/FixSolution/operator-helper/oputil"
 	v12 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

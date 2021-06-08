@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package promethues
+package prometheus
 
 import (
-	"github.com/fixsl/operator-helper/config"
+	"github.com/FixSolution/operator-helper/config"
 	v12 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/prometheus-operator/prometheus-operator/pkg/client/versioned/typed/monitoring/v1"
 	v13 "k8s.io/api/core/v1"

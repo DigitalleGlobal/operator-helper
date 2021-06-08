@@ -17,7 +17,7 @@
 package pod
 
 import (
-	"github.com/fixsl/operator-helper/basetype"
+	"github.com/FixSolution/operator-helper/basetype"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

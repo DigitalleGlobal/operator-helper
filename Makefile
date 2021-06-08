@@ -7,9 +7,9 @@ endif
 
 # Generate code
 generate: controller-gen
-	$(CONTROLLER_GEN) object paths="./basetype/..."
-	$(CONTROLLER_GEN) object paths="./k8s/pdb/..."
-	$(CONTROLLER_GEN) object paths="./operator/promethues/..."
+	$(CONTROLLER_GEN) object:headerFile="boilerplate-header.go.txt" paths="./basetype/..."
+	$(CONTROLLER_GEN) object:headerFile="boilerplate-header.go.txt" paths="./k8s/pdb/..."
+	$(CONTROLLER_GEN) object:headerFile="boilerplate-header.go.txt" paths="./operator/prometheus/..."
 
 
 # find or download controller-gen

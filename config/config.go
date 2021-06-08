@@ -18,7 +18,7 @@ package config
 
 import (
 	"fmt"
-	"github.com/fixsl/operator-helper/oputil"
+	"github.com/FixSolution/operator-helper/oputil"
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes"
