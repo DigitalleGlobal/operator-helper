@@ -17,6 +17,8 @@
 package operator
 
 import (
+	"errors"
+	"fmt"
 	"github.com/FixSolution/operator-helper/reconciler"
 	"github.com/FixSolution/operator-helper/webhook"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -27,6 +29,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
+// Start configures
 func Start(mgr manager.Manager) error {
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
 		return err
@@ -37,23 +40,31 @@ func Start(mgr manager.Manager) error {
 	return mgr.Start(ctrl.SetupSignalHandler())
 }
 
+//BootOrDie configures...
+func BootOrDie(config *rest.Config, options ctrl.Options, getReconcilers func() []reconciler.Reconciler, getRuntimeObjs func() []runtime.Object) {
+	if err := Boot(config, options, getReconcilers, getRuntimeObjs); err != nil {
+		log.Fatal(err)
+	}
+}
+
 //Boot configures...
-func Boot(config *rest.Config, options ctrl.Options, getReconcilers func() []reconciler.Reconciler, getRuntimeObjs func() []runtime.Object) {
+func Boot(config *rest.Config, options ctrl.Options, getReconcilers func() []reconciler.Reconciler, getRuntimeObjs func() []runtime.Object) error {
 	mgr, err := manager.New(config, options)
 	if err != nil {
-		log.Fatalf("manager create error: %s", err)
+		return errors.New(fmt.Sprintf("manager create error: %s", err))
 	}
 	if getRuntimeObjs != nil {
 		if err = webhook.Configure(mgr, getRuntimeObjs()...); err != nil {
-			log.Fatalf("webhook config error: %s", err)
+			return errors.New(fmt.Sprintf("webhook config error: %s", err))
 		}
 	}
 	if getReconcilers != nil {
 		if err = reconciler.Configure(mgr, getReconcilers()...); err != nil {
-			log.Fatalf("reconciler config error: %s", err)
+			return errors.New(fmt.Sprintf("reconciler config error: %s", err))
 		}
 	}
 	if err = Start(mgr); err != nil {
-		log.Fatalf("operator start error: %s", err)
+		return errors.New(fmt.Sprintf("operator start error: %s", err))
 	}
+	return nil
 }
