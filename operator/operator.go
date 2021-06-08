@@ -37,7 +37,8 @@ func Start(mgr manager.Manager) error {
 	return mgr.Start(ctrl.SetupSignalHandler())
 }
 
-func Boot(config *rest.Config, options ctrl.Options, getReconcilers func() []reconciler.Reconciler, getRuntimeObjs func() []runtime.Object) error {
+//Boot configures...
+func Boot(config *rest.Config, options ctrl.Options, getReconcilers func() []reconciler.Reconciler, getRuntimeObjs func() []runtime.Object) {
 	mgr, err := manager.New(config, options)
 	if err != nil {
 		log.Fatalf("manager create error: %s", err)
@@ -52,5 +53,7 @@ func Boot(config *rest.Config, options ctrl.Options, getReconcilers func() []rec
 			log.Fatalf("reconciler config error: %s", err)
 		}
 	}
-	return Start(mgr)
+	if err = Start(mgr); err != nil {
+		log.Fatalf("operator start error: %s", err)
+	}
 }
