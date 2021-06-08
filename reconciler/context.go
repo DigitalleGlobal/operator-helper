@@ -33,11 +33,20 @@ import (
 
 var (
 	_ Context = &contextImpl{}
+	instance Context = nil
 )
+
+func GetInstance() Context  {
+	if instance == nil {
+		panic("No context instance. Call NewContext(mgr manager.Manager) to create the instance")
+	}
+	return instance
+}
 
 // NewContext creates a new reconciler Context
 func NewContext(mgr manager.Manager) Context {
-	return &contextImpl{manager: mgr}
+	instance = &contextImpl{manager: mgr}
+	return instance
 }
 
 type contextImpl struct {
