@@ -20,6 +20,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"k8s.io/apimachinery/pkg/util/yaml"
 	"log"
 	"math"
 	"os"
