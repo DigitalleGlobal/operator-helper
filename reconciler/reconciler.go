@@ -53,10 +53,10 @@ type Defaulting interface {
 	runtime.Object
 	metav1.Object
 
-	// Set the default of the object spec and returns true if any set otherwise false
+	// SetSpecDefaults set the default of the object spec and returns true if any set otherwise false
 	SetSpecDefaults() bool
 
-	// Set the default of the object status and returns true if any set otherwise false
+	// SetStatusDefaults set the default of the object status and returns true if any set otherwise false
 	SetStatusDefaults() bool
 }
 
@@ -78,7 +78,7 @@ type Context interface {
 	// Scheme returns the underlying scheme
 	Scheme() *runtime.Scheme
 
-	// Scheme returns the underlying logger
+	// Logger returns the underlying logger
 	Logger() logr.Logger
 
 	// Run checks if the reconciliation can be done and call the reconcile function to do so
@@ -88,5 +88,5 @@ type Context interface {
 	SetOwnershipReference(owner metav1.Object, controlled metav1.Object) error
 
 	// GetResource is a helper to method to get a resource and do something about its availability
-	GetResource(key client.ObjectKey, object runtime.Object, foundCallback func() (err error), notFoundCallback func() (err error)) error
+	GetResource(key client.ObjectKey, object client.Object, foundCallback func() (err error), notFoundCallback func() (err error)) error
 }

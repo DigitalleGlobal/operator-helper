@@ -64,7 +64,7 @@ func (c *contextImpl) SetOwnershipReference(owner metav1.Object, controlled meta
 	return controllerutil.SetControllerReference(owner, controlled, c.Scheme())
 }
 
-func (c *contextImpl) GetResource(key client.ObjectKey, object runtime.Object, foundCallback func() (err error), notFoundCallback func() (err error)) (err error) {
+func (c *contextImpl) GetResource(key client.ObjectKey, object client.Object, foundCallback func() (err error), notFoundCallback func() (err error)) (err error) {
 	if foundCallback == nil && notFoundCallback == nil {
 		panic("Cannot have both un/found callbacks be nil")
 	}
