@@ -36,7 +36,7 @@ var (
 	instance Context = nil
 )
 
-func GetInstance() Context  {
+func GetContext() Context  {
 	if instance == nil {
 		panic("No context instance. Call NewContext(mgr manager.Manager) to create the instance")
 	}

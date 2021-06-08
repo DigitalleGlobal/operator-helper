@@ -25,12 +25,13 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-
+func Context() reconciler.Context {
+	return reconciler.GetContext()
+}
 
 // Configure configures the webhook for the added CR types
 func Configure(manager ctrl.Manager, apiTypes ...runtime.Object) error {
 	if config.WebHooksEnabled() {
-		ctx := reconciler.NewContext(manager)
 		for _, apiType := range apiTypes {
 			fmt.Printf("configuring the webhook: %T\n", apiType)
 			if err := ctrl.NewWebhookManagedBy(manager).For(apiType).Complete(); err != nil {
