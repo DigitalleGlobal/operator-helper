@@ -1,4 +1,4 @@
-module github.com/FixSolution/operator-helper
+module github.com/monimesl/operator-helper
 
 go 1.15
 

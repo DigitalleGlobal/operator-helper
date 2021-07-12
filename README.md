@@ -4,7 +4,7 @@ Common Go helpers used to simplify kubernetes controller implementations
 
 ### Operators using this helper library
 
-1. [Kubist](https://github.com/FixSolution/kubist)
+1. [Kubist](https://github.com/monimesl/kubist)
 
 ![Utility Icon](utilities.png)
 
