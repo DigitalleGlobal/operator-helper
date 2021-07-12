@@ -64,9 +64,7 @@ vet:
 
 # Generate code
 generate: controller-gen
-	$(CONTROLLER_GEN) object:headerFile="boilerplate-header.go.txt" paths="./basetype/..."
-	$(CONTROLLER_GEN) object:headerFile="boilerplate-header.go.txt" paths="./k8s/pdb/..."
-	$(CONTROLLER_GEN) object:headerFile="boilerplate-header.go.txt" paths="./operator/prometheus/..."
+	$(CONTROLLER_GEN) object:headerFile="boilerplate-header.go.txt" paths="./..."
 
 # Build the docker image
 docker-build: test
