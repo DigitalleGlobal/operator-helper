@@ -17,9 +17,12 @@
 package pod
 
 import (
+	"context"
+	"fmt"
 	"github.com/monimesl/operator-helper/basetype"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 func NewSpec(cfg basetype.PodConfig, volumes []v1.Volume, initContainers []v1.Container, containers []v1.Container) v1.PodSpec {
@@ -50,4 +53,51 @@ func NewTemplateSpec(name, generateName string, labels, annotations map[string]s
 		},
 		Spec: podSpec,
 	}
+}
+
+// IsReady checks if the pod is ready
+func IsReady(pod *v1.Pod) bool {
+	for _, condition := range pod.Status.Conditions {
+		if condition.Type == v1.PodReady && condition.Status == v1.ConditionTrue {
+			return true
+		}
+	}
+	return false
+}
+
+// ListAllWithMatchingLabels list the pods matching the labels
+func ListAllWithMatchingLabels(cl client.Client, namespace string, labels map[string]string) (*v1.PodList, error) {
+	selector, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{
+		MatchLabels: labels,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error on creating selector from label selector: %v", err)
+	}
+	list := &v1.PodList{}
+	listOpts := &client.ListOptions{
+		Namespace:     namespace,
+		LabelSelector: selector,
+	}
+	err = cl.List(context.TODO(), list, listOpts)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
+// ListAllWithMatchingLabelsByReadiness list the pods matching the labels
+func ListAllWithMatchingLabelsByReadiness(cl client.Client, namespace string, labels map[string]string) (ready []v1.Pod, unready []v1.Pod, err error) {
+	pods, err0 := ListAllWithMatchingLabels(cl, namespace, labels)
+	if err0 != nil {
+		err = err0
+		return
+	}
+	for _, pod := range pods.Items {
+		if IsReady(&pod) {
+			ready = append(ready, pod)
+		} else {
+			unready = append(unready, pod)
+		}
+	}
+	return
 }
