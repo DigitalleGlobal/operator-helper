@@ -167,3 +167,17 @@ func CreateConfigFromYamlString(extras string, name string, keyValues map[string
 	}
 	return cfg, keyValues
 }
+
+// IsOrdinalObjectIdle checks whether the ordinal object is idle.
+// E.g for PVC, it means it's not longer attached to any pod.
+func IsOrdinalObjectIdle(ordinalObjName string, replicas int) bool {
+	index := strings.LastIndexAny(ordinalObjName, "-")
+	if index > 0 {
+		ordinal, err := strconv.Atoi(ordinalObjName[index+1:])
+		if err != nil {
+			return false
+		}
+		return ordinal >= replicas
+	}
+	return false
+}
