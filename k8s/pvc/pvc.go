@@ -17,8 +17,11 @@
 package pvc
 
 import (
+	"context"
+	"fmt"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // New creates a new pvc
@@ -36,4 +39,24 @@ func New(namespace, name string, labels map[string]string, spec v1.PersistentVol
 		Spec:   spec,
 		Status: v1.PersistentVolumeClaimStatus{},
 	}
+}
+
+// ListAllWithMatchingLabels list the pvcs matching the labels
+func ListAllWithMatchingLabels(cl client.Client, namespace string, labels map[string]string) (*v1.PersistentVolumeClaimList, error) {
+	selector, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{
+		MatchLabels: labels,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error on creating selector from label selector: %v", err)
+	}
+	list := &v1.PersistentVolumeClaimList{}
+	listOpts := &client.ListOptions{
+		Namespace:     namespace,
+		LabelSelector: selector,
+	}
+	err = cl.List(context.TODO(), list, listOpts)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
 }
