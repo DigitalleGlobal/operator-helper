@@ -101,9 +101,19 @@ func RandomBytes(len int) ([]byte, error) {
 }
 
 // Contains check if the haystack contains the key
-func Contains(key string, haystack []string) bool {
+func Contains(haystack []string, key string) bool {
 	for _, item := range haystack {
 		if key == item {
+			return true
+		}
+	}
+	return false
+}
+
+// ContainsWithPrefix check if the haystack contains a string with the prefix
+func ContainsWithPrefix(haystack []string, prefix string) bool {
+	for _, item := range haystack {
+		if strings.HasPrefix(item, prefix) {
 			return true
 		}
 	}
