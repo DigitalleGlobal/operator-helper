@@ -16,6 +16,15 @@
 
 package k8s
 
+import (
+	"context"
+	v1 "k8s.io/api/core/v1"
+	k8Labels "k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/util/wait"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+	"time"
+)
+
 // EnvVarPodIP holds the POD's IP
 const EnvVarPodIP = "POD_IP"
 const EnvVarEnvoySidecarStatus = "ENVOY_SIDECAR_STATUS"
@@ -33,4 +42,24 @@ func ContainerShellCommand() []string {
 		"sh",
 		"-c",
 	}
+}
+
+// WaitForPodsToTerminate wait for all the pods matching the labels to terminate
+func WaitForPodsToTerminate(k8sClient client.Client, namespace string, labels map[string]string) (err error) {
+	listOptions := &client.ListOptions{
+		Namespace:     namespace,
+		LabelSelector: k8Labels.SelectorFromSet(labels),
+	}
+	err = wait.Poll(5*time.Second, 5*time.Minute, func() (done bool, err error) {
+		podList := &v1.PodList{}
+		err = k8sClient.List(context.TODO(), podList, listOptions)
+		if err != nil {
+			return false, err
+		}
+		if len(podList.Items) == 0 {
+			return true, nil
+		}
+		return false, nil
+	})
+	return err
 }
