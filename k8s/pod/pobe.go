@@ -93,7 +93,8 @@ type Probe struct {
 	TimeoutSeconds int32 `json:"timeoutSeconds"`
 }
 
-func (in *Probes) setDefault() (changed bool) {
+// SetDefault set the default values
+func (in *Probes) SetDefault() (changed bool) {
 	if in.Startup == nil {
 		changed = true
 		in.Startup = &Probe{}
