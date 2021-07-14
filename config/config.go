@@ -30,6 +30,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -42,6 +43,7 @@ var envWebHookCertificateDir = "WEBHOOK_CERTIFICATES_DIR"
 var envNamespacesToWatch = "NAMESPACES_TO_WATCH"
 var envEnableLeaderElection = "ENABLE_LEADER_ELECTION"
 var envLeaderElectionNamespace = "LEADER_ELECTION_NAMESPACE"
+var envMetricsServerPort = "METRICS_SERVER_PORT"
 
 // RequireRootLogger get the root logger or panic if not yet created
 func RequireRootLogger() logr.Logger {
@@ -84,7 +86,7 @@ func GetManagerParams(scheme *runtime.Scheme, operatorName, domainName string) (
 	options := ctrl.Options{
 		Scheme:                  scheme,
 		Port:                    9443,
-		MetricsBindAddress:      "",
+		MetricsBindAddress:      metricServerAddress(),
 		Logger:                  GetLogger(operatorName),
 		LeaderElection:          LeaderElectionEnabled(),
 		LeaderElectionNamespace: LeaderElectionNamespace(operatorName),
@@ -106,6 +108,18 @@ func GetManagerParams(scheme *runtime.Scheme, operatorName, domainName string) (
 // LeaderElectionEnabled checks if leader election is enabled
 func LeaderElectionEnabled() bool {
 	return strings.TrimSpace(os.Getenv(envEnableLeaderElection)) != "false"
+}
+
+func metricServerAddress() string {
+	portStr := strings.TrimSpace(os.Getenv(envMetricsServerPort))
+	if portStr == "" {
+		return ""
+	}
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		log.Fatalf("Invalid %s=%s", envMetricsServerPort, portStr)
+	}
+	return fmt.Sprintf(":%d", port)
 }
 
 // WebHooksEnabled checks if webhook is enabled
