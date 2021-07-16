@@ -92,7 +92,7 @@ func (c *contextImpl) GetResource(key client.ObjectKey, object client.Object, fo
 func (c *contextImpl) Run(req reconcile.Request, object KubeRuntimeObject, reconcile func(deleted bool) error) (reconcile.Result, error) {
 	startTime := time.Now()
 	start(req, c.Logger())
-	defer stop(req, startTime, c.Logger())
+	defer end(req, startTime, c.Logger())
 	if err := c.Client().Get(context.TODO(), req.NamespacedName, object); err != nil {
 		if errors.IsNotFound(err) {
 			// The runtime object is not found. Kubernetes will automatically
@@ -117,28 +117,17 @@ func (c *contextImpl) Run(req reconcile.Request, object KubeRuntimeObject, recon
 		if err := c.Client().Update(context.TODO(), object); err != nil {
 			return errored(err, req, c.Logger())
 		}
-		return requeue(req, c.Logger())
 	}
 	if df, ok := object.(Defaulting); ok && df.SetStatusDefaults() {
 		c.Logger().Info("Setting the default status of the request object")
 		if err := c.Client().Status().Update(context.TODO(), object); err != nil {
 			return errored(err, req, c.Logger())
 		}
-		return requeue(req, c.Logger())
 	}
 	if err := reconcile(false); err != nil {
 		return errored(err, req, c.Logger())
 	}
 	return complete(req, c.Logger())
-}
-
-func requeue(req reconcile.Request, logger logr.Logger) (ctrl.Result, error) {
-	logger.Info("[Requeue] Reconciliation",
-		"Request.Namespace",
-		req.NamespacedName, "Request.Name",
-		req.Name,
-	)
-	return reconcile.Result{Requeue: true}, nil
 }
 
 func complete(req reconcile.Request, logger logr.Logger) (reconcile.Result, error) {
@@ -167,9 +156,9 @@ func start(req reconcile.Request, logger logr.Logger) {
 	)
 }
 
-func stop(req reconcile.Request, startTime time.Time, logger logr.Logger) {
+func end(req reconcile.Request, startTime time.Time, logger logr.Logger) {
 	duration := time.Since(startTime).Seconds()
-	logger.Info("[Stop] Reconciliation",
+	logger.Info("[End] Reconciliation",
 		"Request.Namespace",
 		req.NamespacedName, "Request.Name",
 		req.Name, "durationSec", duration,

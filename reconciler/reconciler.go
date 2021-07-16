@@ -40,7 +40,7 @@ func Configure(manager ctrl.Manager, reconcilers ...Reconciler) error {
 }
 
 // Reconciler presents the interface to be
-// implemented by a controller-runtime controller
+// implemented by a controllers-runtime controllers
 type Reconciler interface {
 	reconcile.Reconciler
 
@@ -69,7 +69,7 @@ type KubeRuntimeObject interface {
 // Context represents a context of the Reconciler
 type Context interface {
 
-	// NewControllerBuilder returns a new builder to create a controller
+	// NewControllerBuilder returns a new builder to create a controllers
 	NewControllerBuilder() *builder.Builder
 
 	// Client returns the underlying client

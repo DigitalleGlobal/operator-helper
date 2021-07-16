@@ -35,7 +35,7 @@ install: manifests kustomize
 uninstall: manifests kustomize
 	$(KUSTOMIZE) build config/crd | kubectl delete -f -
 
-# Deploy controller in the configured Kubernetes cluster in ~/.kube/config
+# Deploy controllers in the configured Kubernetes cluster in ~/.kube/config
 deploy: manifests kustomize
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
@@ -67,8 +67,8 @@ docker-push:
 crds: kustomize
 	$(KUSTOMIZE) build config/crd > deployments/charts/operator/crds/customresourcedefinitions.yaml
 
-# find or download controller-gen
-# download controller-gen if necessary
+# find or download controllers-gen
+# download controllers-gen if necessary
 controller-gen:
 ifeq (, $(shell which controller-gen))
 	@{ \

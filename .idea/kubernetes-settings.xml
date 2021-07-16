@@ -5,6 +5,9 @@
       <SpecSource>
         <option name="pathOrUrl" value="$PROJECT_DIR$/../zookeeper-operator/deployments/charts/operator/crds/customresourcedefinitions.yaml" />
       </SpecSource>
+      <SpecSource>
+        <option name="pathOrUrl" value="$PROJECT_DIR$/../zookeeper-operator/config/crd/bases/zookeeper.monime.sl_zookeeperclusters.yaml" />
+      </SpecSource>
     </specSources>
   </component>
 </project>
