@@ -24,7 +24,7 @@ const (
 	DefaultStartupProbePeriodSeconds = 10
 
 	// DefaultStartupProbeFailureThreshold is the default failure threshold  for the startup probe
-	DefaultStartupProbeFailureThreshold = 30
+	DefaultStartupProbeFailureThreshold = 10
 
 	// DefaultStartupProbeSuccessThreshold is the default success threshold  for the startup probe
 	DefaultStartupProbeSuccessThreshold = 1
@@ -33,34 +33,34 @@ const (
 	DefaultStartupProbeTimeoutSeconds = 10
 
 	// DefaultReadinessProbeInitialDelaySeconds is the default  initial delay or the readiness probe
-	DefaultReadinessProbeInitialDelaySeconds = 20
+	DefaultReadinessProbeInitialDelaySeconds = 10
 
 	// DefaultReadinessProbePeriodSeconds is the default period for the readiness probe
 	DefaultReadinessProbePeriodSeconds = 10
 
 	// DefaultReadinessProbeFailureThreshold is the default failure threshold  for the readiness probe
-	DefaultReadinessProbeFailureThreshold = 9
+	DefaultReadinessProbeFailureThreshold = 3
 
 	// DefaultReadinessProbeSuccessThreshold is the default success threshold  for the readiness probe
 	DefaultReadinessProbeSuccessThreshold = 1
 
 	// DefaultReadinessProbeTimeoutSeconds is the default timeout for the readiness probe
-	DefaultReadinessProbeTimeoutSeconds = 5
+	DefaultReadinessProbeTimeoutSeconds = 10
 
 	// DefaultLivenessProbeInitialDelaySeconds is the default initial delay for the liveness probe
-	DefaultLivenessProbeInitialDelaySeconds = 60
+	DefaultLivenessProbeInitialDelaySeconds = 10
 
 	// DefaultLivenessProbePeriodSeconds is the default period for the liveness probe
-	DefaultLivenessProbePeriodSeconds = 15
+	DefaultLivenessProbePeriodSeconds = 10
 
 	// DefaultLivenessProbeFailureThreshold is the default failure threshold for the liveness probe
-	DefaultLivenessProbeFailureThreshold = 4
+	DefaultLivenessProbeFailureThreshold = 3
 
 	// DefaultLivenessProbeSuccessThreshold is the default success threshold for the liveness probe
 	DefaultLivenessProbeSuccessThreshold = 1
 
 	// DefaultLivenessProbeTimeoutSeconds is the default timeout for the liveness probe
-	DefaultLivenessProbeTimeoutSeconds = 5
+	DefaultLivenessProbeTimeoutSeconds = 3
 )
 
 // +k8s:openapi-gen=true
@@ -98,30 +98,74 @@ func (in *Probes) SetDefault() (changed bool) {
 	if in.Startup == nil {
 		changed = true
 		in.Startup = &Probe{}
-		in.Startup.InitialDelaySeconds = DefaultStartupProbeInitialDelaySeconds
-		in.Startup.PeriodSeconds = DefaultStartupProbePeriodSeconds
-		in.Startup.FailureThreshold = DefaultStartupProbeFailureThreshold
-		in.Startup.SuccessThreshold = DefaultStartupProbeSuccessThreshold
-		in.Startup.TimeoutSeconds = DefaultStartupProbeTimeoutSeconds
+	}
+	if startupDefault(in.Startup) {
+		changed = true
 	}
 	if in.Readiness == nil {
 		changed = true
 		in.Readiness = &Probe{}
-		in.Readiness.InitialDelaySeconds = DefaultReadinessProbeInitialDelaySeconds
-		in.Readiness.PeriodSeconds = DefaultReadinessProbePeriodSeconds
-		in.Readiness.FailureThreshold = DefaultReadinessProbeFailureThreshold
-		in.Readiness.SuccessThreshold = DefaultReadinessProbeSuccessThreshold
-		in.Readiness.TimeoutSeconds = DefaultReadinessProbeTimeoutSeconds
+	}
+	if readinessDefault(in.Readiness) {
+		changed = true
 	}
 	if in.Liveness == nil {
 		changed = true
 		in.Liveness = &Probe{}
-		in.Liveness.InitialDelaySeconds = DefaultLivenessProbeInitialDelaySeconds
-		in.Liveness.PeriodSeconds = DefaultLivenessProbePeriodSeconds
-		in.Liveness.FailureThreshold = DefaultLivenessProbeFailureThreshold
-		in.Liveness.SuccessThreshold = DefaultLivenessProbeSuccessThreshold
-		in.Liveness.TimeoutSeconds = DefaultLivenessProbeTimeoutSeconds
 	}
-
+	if livenessDefault(in.Liveness) {
+		changed = true
+	}
 	return changed
+}
+
+func startupDefault(probe *Probe) bool {
+	return probeDefault(probe,
+		DefaultStartupProbeInitialDelaySeconds,
+		DefaultStartupProbePeriodSeconds,
+		DefaultStartupProbeFailureThreshold,
+		DefaultStartupProbeSuccessThreshold,
+		DefaultStartupProbeTimeoutSeconds)
+}
+
+func livenessDefault(probe *Probe) bool {
+	return probeDefault(probe,
+		DefaultLivenessProbeInitialDelaySeconds,
+		DefaultLivenessProbePeriodSeconds,
+		DefaultLivenessProbeFailureThreshold,
+		DefaultLivenessProbeSuccessThreshold,
+		DefaultLivenessProbeTimeoutSeconds)
+}
+
+func readinessDefault(probe *Probe) bool {
+	return probeDefault(probe,
+		DefaultReadinessProbeInitialDelaySeconds,
+		DefaultReadinessProbePeriodSeconds,
+		DefaultReadinessProbeFailureThreshold,
+		DefaultReadinessProbeSuccessThreshold,
+		DefaultReadinessProbeTimeoutSeconds)
+}
+
+func probeDefault(probe *Probe, delaySec, periodSec, failureThreshold, successThreshold, timeoutSeconds int32) (changed bool) {
+	if probe.InitialDelaySeconds == 0 {
+		changed = true
+		probe.InitialDelaySeconds = delaySec
+	}
+	if probe.PeriodSeconds == 0 {
+		changed = true
+		probe.PeriodSeconds = periodSec
+	}
+	if probe.FailureThreshold == 0 {
+		changed = true
+		probe.FailureThreshold = failureThreshold
+	}
+	if probe.SuccessThreshold == 0 {
+		changed = true
+		probe.SuccessThreshold = successThreshold
+	}
+	if probe.TimeoutSeconds == 0 {
+		changed = true
+		probe.TimeoutSeconds = timeoutSeconds
+	}
+	return
 }
