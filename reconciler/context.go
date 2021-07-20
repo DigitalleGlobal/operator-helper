@@ -70,6 +70,8 @@ func (c *contextImpl) NewControllerBuilder() *builder.Builder {
 }
 
 func (c *contextImpl) SetOwnershipReference(owner metav1.Object, controlled metav1.Object) error {
+	c.Logger().Info("Setting ownership reference to an object",
+		"object", controlled.GetName(), "owner", owner.GetName())
 	return controllerutil.SetControllerReference(owner, controlled, c.Scheme())
 }
 

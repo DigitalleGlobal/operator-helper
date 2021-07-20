@@ -16,6 +16,8 @@
 
 package pod
 
+import v1 "k8s.io/api/core/v1"
+
 const (
 	// DefaultStartupProbeInitialDelaySeconds is the default  initial delay or the startup probe
 	DefaultStartupProbeInitialDelaySeconds = 10
@@ -91,6 +93,17 @@ type Probe struct {
 	// +kubebuilder:validation:Minimum=0
 	// +optional
 	TimeoutSeconds int32 `json:"timeoutSeconds"`
+}
+
+func (in *Probe) ToK8sProbe(handler v1.Handler) v1.Probe {
+	return v1.Probe{
+		Handler:             handler,
+		InitialDelaySeconds: in.InitialDelaySeconds,
+		PeriodSeconds:       in.PeriodSeconds,
+		SuccessThreshold:    in.SuccessThreshold,
+		FailureThreshold:    in.FailureThreshold,
+		TimeoutSeconds:      in.TimeoutSeconds,
+	}
 }
 
 // SetDefault set the default values
