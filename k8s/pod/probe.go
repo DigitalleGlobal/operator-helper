@@ -32,7 +32,7 @@ const (
 	DefaultStartupProbeSuccessThreshold = 1
 
 	// DefaultStartupProbeTimeoutSeconds is the default timeout for the startup probe
-	DefaultStartupProbeTimeoutSeconds = 10
+	DefaultStartupProbeTimeoutSeconds = 1
 
 	// DefaultReadinessProbeInitialDelaySeconds is the default  initial delay or the readiness probe
 	DefaultReadinessProbeInitialDelaySeconds = 10
@@ -41,13 +41,13 @@ const (
 	DefaultReadinessProbePeriodSeconds = 10
 
 	// DefaultReadinessProbeFailureThreshold is the default failure threshold  for the readiness probe
-	DefaultReadinessProbeFailureThreshold = 3
+	DefaultReadinessProbeFailureThreshold = 5
 
 	// DefaultReadinessProbeSuccessThreshold is the default success threshold  for the readiness probe
 	DefaultReadinessProbeSuccessThreshold = 1
 
 	// DefaultReadinessProbeTimeoutSeconds is the default timeout for the readiness probe
-	DefaultReadinessProbeTimeoutSeconds = 10
+	DefaultReadinessProbeTimeoutSeconds = 1
 
 	// DefaultLivenessProbeInitialDelaySeconds is the default initial delay for the liveness probe
 	DefaultLivenessProbeInitialDelaySeconds = 10
@@ -56,13 +56,13 @@ const (
 	DefaultLivenessProbePeriodSeconds = 10
 
 	// DefaultLivenessProbeFailureThreshold is the default failure threshold for the liveness probe
-	DefaultLivenessProbeFailureThreshold = 3
+	DefaultLivenessProbeFailureThreshold = 5
 
 	// DefaultLivenessProbeSuccessThreshold is the default success threshold for the liveness probe
 	DefaultLivenessProbeSuccessThreshold = 1
 
 	// DefaultLivenessProbeTimeoutSeconds is the default timeout for the liveness probe
-	DefaultLivenessProbeTimeoutSeconds = 3
+	DefaultLivenessProbeTimeoutSeconds = 1
 )
 
 // +k8s:openapi-gen=true
