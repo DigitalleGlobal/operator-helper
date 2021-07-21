@@ -51,7 +51,7 @@ type MetricSpec struct {
 }
 
 // NewServiceMonitor creates a ServiceMonitor from the MetricSpec
-func (in *MetricSpec) NewServiceMonitor(name, namespace string, labels map[string]string, labelSector metav1.LabelSelector, port string) *v12.ServiceMonitor {
+func (in *MetricSpec) NewServiceMonitor(name, namespace string, labels map[string]string, labelSector metav1.LabelSelector, port, path string) *v12.ServiceMonitor {
 	return &v12.ServiceMonitor{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ServiceMonitor",
@@ -68,6 +68,7 @@ func (in *MetricSpec) NewServiceMonitor(name, namespace string, labels map[strin
 			Endpoints: []v12.Endpoint{
 				{
 					Port:                 port,
+					Path:                 path,
 					Interval:             in.ScrapeInterval,
 					ScrapeTimeout:        in.ScrapeTimeout,
 					TLSConfig:            in.TlsConfig,
@@ -97,7 +98,7 @@ func NewPrometheusInterface(namespace string) v1.PrometheusInterface {
 	return NewMonitoringInterface().Prometheuses(namespace)
 }
 
-// ServiceMonitorInterface creates new ServiceMonitorInterface
+// NewServiceMonitorInterface creates new ServiceMonitorInterface
 func NewServiceMonitorInterface(namespace string) v1.ServiceMonitorInterface {
 	return NewMonitoringInterface().ServiceMonitors(namespace)
 }
