@@ -27,9 +27,11 @@ import (
 // +k8s:openapi-gen=true
 // +kubebuilder:object:generate=true
 
-// MetricSpec defines some properties use the create the ServiceMonitorSpec
+// MonitoringConfig defines some properties use the create the ServiceMonitorSpec
 // objects if prometheus metrics is supported by the platform
-type MetricSpec struct {
+type MonitoringConfig struct {
+	// Enabled defines whether this monitoring is enabled or not.
+	Enabled bool `json:"enabled,omitempty"`
 	// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
 	SampleLimit uint64 `json:"sampleLimit,omitempty"`
 	// Timeout after which the scrape is ended
@@ -50,8 +52,8 @@ type MetricSpec struct {
 	MetricReLabelings []*v12.RelabelConfig `json:"metricRelabelings,omitempty"`
 }
 
-// NewServiceMonitor creates a ServiceMonitor from the MetricSpec
-func (in *MetricSpec) NewServiceMonitor(name, namespace string, labels map[string]string, labelSector metav1.LabelSelector, port, path string) *v12.ServiceMonitor {
+// NewServiceMonitor creates a ServiceMonitor from the MonitoringConfig
+func (in *MonitoringConfig) NewServiceMonitor(name, namespace string, labels map[string]string, labelSector metav1.LabelSelector, port, path string) *v12.ServiceMonitor {
 	return &v12.ServiceMonitor{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ServiceMonitor",
