@@ -35,6 +35,7 @@ func NewSpec(cfg basetype.PodConfig, volumes []v1.Volume, initContainers []v1.Co
 		Tolerations:           cfg.Tolerations,
 		NodeSelector:          cfg.NodeSelector,
 		RestartPolicy:         cfg.RestartPolicy,
+		ServiceAccountName:    cfg.ServiceAccountName,
 		SecurityContext:       &cfg.SecurityContext,
 		ActiveDeadlineSeconds: activeDeadlineSeconds,
 		InitContainers:        initContainers,

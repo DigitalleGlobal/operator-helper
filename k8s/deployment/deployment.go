@@ -50,7 +50,7 @@ func IsReady(client client.Client, namespace, name string, replicas int32) bool 
 		Name:      name,
 	}, dep)
 	if err != nil && !errors.IsNotFound(err) {
-		fmt.Println(fmt.Sprintf("There was an error on probing for the deployment: %s", err))
+		fmt.Printf("There was an error on probing for the deployment: %s\n", err)
 	}
 	return err == nil && replicas == dep.Status.ReadyReplicas
 }

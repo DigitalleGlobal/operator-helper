@@ -26,6 +26,9 @@ import (
 // PodConfig defines the configurations of a kubernetes pod
 type PodConfig struct {
 
+	// Env defines environment variables for the pod
+	Env []v1.EnvVar `json:"env,omitempty"`
+
 	// Affinity defines the pod's scheduling constraints
 	Affinity v1.Affinity `json:"affinity,omitempty"`
 
@@ -39,6 +42,10 @@ type PodConfig struct {
 	// One of Always, OnFailure, Never.
 	// Default to Always.
 	RestartPolicy v1.RestartPolicy `json:"restartPolicy,omitempty"`
+
+	// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
+	// +optional
+	ServiceAccountName string `json:"serviceAccountName,omitempty"`
 
 	// PodSecurityContext holds pod-level security attributes and common container settings.
 	// Some fields are also present in container.securityContext.  Field values of

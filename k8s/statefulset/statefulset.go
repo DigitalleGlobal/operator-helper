@@ -69,7 +69,7 @@ func IsReady(client client.Client, namespace, name string, replicas int32) bool 
 		Name:      name,
 	}, sset)
 	if err != nil && !errors.IsNotFound(err) {
-		fmt.Println(fmt.Sprintf("There was an error on probing for the statefulset: %s", err))
+		fmt.Printf("There was an error on probing for the statefulset: %s\n", err)
 	}
 	return err == nil && replicas == sset.Status.ReadyReplicas
 }

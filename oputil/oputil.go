@@ -143,7 +143,7 @@ func CreateConfigFromYamlString(extras string, name string, keyValues map[string
 	}
 	if extras != "" {
 		extrasMap := map[string]string{}
-		if err := yaml.Unmarshal([]byte(extras), extrasMap); err != nil {
+		if err := yaml.Unmarshal([]byte(extras), &extrasMap); err != nil {
 			fmt.Println(fmt.Errorf("invalid %s data. reason: %s", name, err))
 		}
 		for k, v := range extrasMap {
