@@ -27,6 +27,9 @@ const (
 
 // DecorateForPrometheus adds prometheus scraping annotations
 func DecorateForPrometheus(ann map[string]string, scrap bool, port int) map[string]string {
+	if ann == nil {
+		ann = map[string]string{}
+	}
 	ann[annPrometheusScrape] = strconv.FormatBool(scrap)
 	if scrap {
 		ann[annPrometheusPort] = strconv.FormatInt(int64(port), 10)
