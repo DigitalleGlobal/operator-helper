@@ -37,8 +37,8 @@ const (
 	LabelAppInstance = "app.kubernetes.io/instance"
 	// LabelAppVersion defines the app label
 	LabelAppVersion = "app.kubernetes.io/version"
-	// LabelAppVComponent defines the component within the architecture e.g database
-	LabelAppVComponent = "app.kubernetes.io/component"
+	// LabelAppComponent defines the component within the architecture e.g database
+	LabelAppComponent = "app.kubernetes.io/component"
 	// LabelAppManagedBy defines the managed-by label
 	LabelAppManagedBy = "app.kubernetes.io/managed-by"
 	// LabelAppPartOf defines the managed-by label
