@@ -29,11 +29,20 @@ import (
 const EnvVarPodIP = "POD_IP"
 const EnvVarEnvoySidecarStatus = "ENVOY_SIDECAR_STATUS"
 
+// See https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/#labels
 const (
-	// LabelAppName defines the app label
+	// LabelAppName defines name of the application e.g postgres
 	LabelAppName = "app.kubernetes.io/name"
+	// LabelAppInstance defines the unique name identifying the instance of an application
+	LabelAppInstance = "app.kubernetes.io/instance"
+	// LabelAppVersion defines the app label
+	LabelAppVersion = "app.kubernetes.io/version"
+	// LabelAppVComponent defines the component within the architecture e.g database
+	LabelAppVComponent = "app.kubernetes.io/component"
 	// LabelAppManagedBy defines the managed-by label
 	LabelAppManagedBy = "app.kubernetes.io/managed-by"
+	// LabelAppPartOf defines the managed-by label
+	LabelAppPartOf = "app.kubernetes.io/part-of"
 )
 
 // ContainerShellCommand is helper factory method to create the shell command
