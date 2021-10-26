@@ -68,4 +68,7 @@ type PodConfig struct {
 	// Defaults to 30 seconds.
 	// +optional
 	TerminationGracePeriodSeconds *int64 `json:"terminationGracePeriodSeconds,omitempty"`
+
+	// ResourceRequirements describes the compute resource requirements for this pod's container(s)
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
