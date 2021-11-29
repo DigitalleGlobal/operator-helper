@@ -51,11 +51,17 @@ func NewMetadata(cfg basetype.PodConfig, name, generateName string, labels, anno
 	metadata := cfg.ObjectMeta
 	metadata.Name = name
 	metadata.GenerateName = generateName
+	if metadata.Labels == nil {
+		metadata.Labels = map[string]string{}
+	}
+	if metadata.Annotations == nil {
+		metadata.Annotations = map[string]string{}
+	}
 	for label, value := range labels {
 		metadata.Labels[label] = value
 	}
 	for annotation, value := range annotations {
-		metadata.Labels[annotation] = value
+		metadata.Annotations[annotation] = value
 	}
 	return metadata
 }
