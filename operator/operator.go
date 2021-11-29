@@ -39,31 +39,31 @@ func Start(mgr manager.Manager) error {
 	return mgr.Start(ctrl.SetupSignalHandler())
 }
 
-//BootOrDie configures...
+// BootOrDie configures...
 func BootOrDie(config *rest.Config, options ctrl.Options, getReconcilers func() []reconciler.Reconciler, getRuntimeObjs func() []runtime.Object) {
 	if err := Boot(config, options, getReconcilers, getRuntimeObjs); err != nil {
 		log.Fatal(err)
 	}
 }
 
-//Boot configures...
+// Boot configures...
 func Boot(config *rest.Config, options ctrl.Options, getReconcilers func() []reconciler.Reconciler, getRuntimeObjs func() []runtime.Object) error {
 	mgr, err := manager.New(config, options)
 	if err != nil {
-		return fmt.Errorf("manager create error: %s", err)
+		return fmt.Errorf("manager create error: %w", err)
 	}
 	if getRuntimeObjs != nil {
 		if err = webhook.Configure(mgr, getRuntimeObjs()...); err != nil {
-			return fmt.Errorf("webhook config error: %s", err)
+			return fmt.Errorf("webhook config error: %w", err)
 		}
 	}
 	if getReconcilers != nil {
 		if err = reconciler.Configure(mgr, getReconcilers()...); err != nil {
-			return fmt.Errorf("reconciler config error: %s", err)
+			return fmt.Errorf("reconciler config error: %w", err)
 		}
 	}
 	if err = Start(mgr); err != nil {
-		return fmt.Errorf("operator start error: %s", err)
+		return fmt.Errorf("operator start error: %w", err)
 	}
 	return nil
 }

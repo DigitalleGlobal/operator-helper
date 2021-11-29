@@ -26,34 +26,38 @@ import (
 )
 
 func NewSpec(cfg basetype.PodConfig, volumes []v1.Volume, initContainers []v1.Container, containers []v1.Container) v1.PodSpec {
-	var activeDeadlineSeconds *int64
-	if cfg.ActiveDeadlineSeconds > 0 {
-		activeDeadlineSeconds = &cfg.ActiveDeadlineSeconds
-	}
 	return v1.PodSpec{
-		Affinity:              &cfg.Affinity,
-		Tolerations:           cfg.Tolerations,
-		NodeSelector:          cfg.NodeSelector,
-		RestartPolicy:         cfg.RestartPolicy,
-		ServiceAccountName:    cfg.ServiceAccountName,
-		SecurityContext:       &cfg.SecurityContext,
-		ActiveDeadlineSeconds: activeDeadlineSeconds,
-		InitContainers:        initContainers,
-		Containers:            containers,
-		Volumes:               volumes,
+		Volumes:                       volumes,
+		InitContainers:                initContainers,
+		Containers:                    containers,
+		RestartPolicy:                 cfg.Spec.RestartPolicy,
+		TerminationGracePeriodSeconds: cfg.Spec.TerminationGracePeriodSeconds,
+		ActiveDeadlineSeconds:         cfg.Spec.ActiveDeadlineSeconds,
+		DNSPolicy:                     cfg.Spec.DNSPolicy,
+		NodeSelector:                  cfg.Spec.NodeSelector,
+		ServiceAccountName:            cfg.Spec.ServiceAccountName,
+		NodeName:                      cfg.Spec.NodeName,
+		SecurityContext:               cfg.Spec.SecurityContext,
+		Affinity:                      cfg.Spec.Affinity,
+		Tolerations:                   cfg.Spec.Tolerations,
+		PriorityClassName:             cfg.Spec.PriorityClassName,
+		Priority:                      cfg.Spec.Priority,
+		PreemptionPolicy:              cfg.Spec.PreemptionPolicy,
+		Overhead:                      cfg.Spec.Overhead,
 	}
 }
 
-func NewTemplateSpec(name, generateName string, labels, annotations map[string]string, podSpec v1.PodSpec) v1.PodTemplateSpec {
-	return v1.PodTemplateSpec{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:         name,
-			GenerateName: generateName,
-			Labels:       labels,
-			Annotations:  annotations,
-		},
-		Spec: podSpec,
+func NewMetadata(cfg basetype.PodConfig, name, generateName string, labels, annotations map[string]string) metav1.ObjectMeta {
+	metadata := cfg.ObjectMeta
+	metadata.Name = name
+	metadata.GenerateName = generateName
+	for label, value := range labels {
+		metadata.Labels[label] = value
 	}
+	for annotation, value := range annotations {
+		metadata.Labels[annotation] = value
+	}
+	return metadata
 }
 
 // IsReady checks if the pod is ready
@@ -72,7 +76,7 @@ func ListAllWithMatchingLabels(cl client.Client, namespace string, labels map[st
 		MatchLabels: labels,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error on creating selector from label selector: %v", err)
+		return nil, fmt.Errorf("error on creating selector from label selector: %w", err)
 	}
 	list := &v1.PodList{}
 	listOpts := &client.ListOptions{

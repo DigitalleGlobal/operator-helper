@@ -38,6 +38,6 @@ func New(namespace, name string, data map[string][]byte) *v12.Secret {
 }
 
 // NewPassword creates a new password of length len
-func NewPassword(len int) (string, error) {
-	return oputil.RandomString(len)
+func NewPassword(size int) (string, error) {
+	return oputil.RandomString(size)
 }

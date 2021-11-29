@@ -81,19 +81,19 @@ func RequireValue(envVar string) string {
 }
 
 // RandomString generates a random base64 string of length len or err
-func RandomString(len int) (string, error) {
-	bitsNeeded := len * 6
+func RandomString(size int) (string, error) {
+	bitsNeeded := size * 6
 	bytesNeeded := math.Ceil(float64(bitsNeeded) / 8)
 	bs, err := RandomBytes(int(bytesNeeded))
 	if err != nil {
 		return "", err
 	}
-	return base64.URLEncoding.EncodeToString(bs)[:len], nil
+	return base64.URLEncoding.EncodeToString(bs)[:size], nil
 }
 
 // RandomBytes generates a random bytes of len len or error
-func RandomBytes(len int) ([]byte, error) {
-	bs := make([]byte, len)
+func RandomBytes(ize int) ([]byte, error) {
+	bs := make([]byte, ize)
 	if _, err := rand.Read(bs); err != nil {
 		return nil, err
 	}
@@ -144,11 +144,11 @@ func CreateConfigFromYamlString(extras string, name string, keyValues map[string
 	if extras != "" {
 		extrasMap := map[string]string{}
 		if err := yaml.Unmarshal([]byte(extras), &extrasMap); err != nil {
-			fmt.Println(fmt.Errorf("invalid %s data. reason: %s", name, err))
+			log.Printf("invalid %s data. reason: %s", name, err)
 		}
 		for k, v := range extrasMap {
 			if !isIncluded(k) {
-				fmt.Printf("The key: %s cannot be set directly to: '%s'. Skipping...", k, name)
+				log.Printf("The key: %s cannot be set directly to: '%s'. Skipping...", k, name)
 				continue
 			}
 			keyValues[k] = v
@@ -157,7 +157,7 @@ func CreateConfigFromYamlString(extras string, name string, keyValues map[string
 	cfg := ""
 	for k, v := range keyValues {
 		if k == "" {
-			fmt.Printf("Invalid key: %s for config: %s", k, name)
+			log.Printf("Invalid key: %s for config: %s", k, name)
 		} else if v != "" {
 			// drop empty value cfg
 			cfg += fmt.Sprintf("%s=%s\n", k, v)

@@ -17,7 +17,6 @@
 package webhook
 
 import (
-	"fmt"
 	"github.com/monimesl/operator-helper/config"
 	"github.com/monimesl/operator-helper/reconciler"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -33,7 +32,7 @@ func Context() reconciler.Context {
 func Configure(manager ctrl.Manager, apiTypes ...runtime.Object) error {
 	if config.WebHooksEnabled() {
 		for _, apiType := range apiTypes {
-			fmt.Printf("configuring the webhook: %T\n", apiType)
+			log.Printf("configuring the webhook: %T\n", apiType)
 			if err := ctrl.NewWebhookManagedBy(manager).For(apiType).Complete(); err != nil {
 				return err
 			}

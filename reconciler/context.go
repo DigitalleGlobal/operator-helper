@@ -33,7 +33,7 @@ import (
 
 var (
 	_        Context = &contextImpl{}
-	instance Context = nil
+	instance Context
 )
 
 func GetContext() Context {
@@ -106,7 +106,7 @@ func (c *contextImpl) Run(req reconcile.Request, object KubeRuntimeObject, recon
 	}
 	if delTime := object.GetDeletionTimestamp(); delTime != nil {
 		c.Logger().Info("The request object has been scheduled for delete",
-			"Timestamp", time.Until((*delTime).Time).Seconds())
+			"Timestamp", time.Until(delTime.Time).Seconds())
 		// The runtime object is marked for deletion - return but do not requeue
 		if err := reconcile(true); err != nil {
 			return errored(err, req, c.Logger())

@@ -18,6 +18,7 @@ package basetype
 
 import (
 	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // +k8s:openapi-gen=true
@@ -25,19 +26,30 @@ import (
 
 // PodConfig defines the configurations of a kubernetes pod
 type PodConfig struct {
+	// Standard object's metadata.
+	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+	metav1.ObjectMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+
+	// PodSpec
+	Spec PodSpec `json:"spec,omitempty" protobuf:"bytes,1,opt,name=spec"`
+}
+
+// +k8s:openapi-gen=true
+// +kubebuilder:object:generate=true
+
+// PodSpec defines the PodSpec of a kubernetes pod
+type PodSpec struct {
 
 	// Env defines environment variables for the pod
 	Env []v1.EnvVar `json:"env,omitempty"`
 
 	// Affinity defines the pod's scheduling constraints
-	Affinity v1.Affinity `json:"affinity,omitempty"`
-
-	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
+	Affinity *v1.Affinity `json:"affinity,omitempty"`
 
 	// Optional duration in seconds the pod may be active on the node relative to
 	// StartTime before the system will actively try to mark it failed and kill associated containers.
 	// Value must be a positive integer.
-	ActiveDeadlineSeconds int64 `json:"activeDeadlineSeconds,omitempty"`
+	ActiveDeadlineSeconds *int64 `json:"activeDeadlineSeconds,omitempty"`
 	// Restart policy for all containers within the pod.
 	// One of Always, OnFailure, Never.
 	// Default to Always.
@@ -50,7 +62,7 @@ type PodConfig struct {
 	// PodSecurityContext holds pod-level security attributes and common container settings.
 	// Some fields are also present in container.securityContext.  Field values of
 	// container.securityContext take precedence over field values of PodSecurityContext.
-	SecurityContext v1.PodSecurityContext `json:"securityContext,omitempty"`
+	SecurityContext *v1.PodSecurityContext `json:"securityContext,omitempty"`
 
 	// Tolerations are attached to tolerates any taint that matches
 	// the triple <key,value,effect> using the matching operator <operator>.
@@ -71,4 +83,21 @@ type PodConfig struct {
 
 	// ResourceRequirements describes the compute resource requirements for this pod's container(s)
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+
+	Overhead v1.ResourceList `json:"overhead,omitempty" protobuf:"bytes,32,opt,name=overhead"`
+
+	DNSPolicy v1.DNSPolicy `json:"dnsPolicy,omitempty" protobuf:"bytes,6,opt,name=dnsPolicy,casttype=DNSPolicy"`
+	// NodeSelector is a selector which must be true for the pod to fit on a node.
+	// Selector which must match a node's labels for the pod to be scheduled on that node.
+	// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+	// +optional
+	NodeSelector map[string]string `json:"nodeSelector,omitempty" protobuf:"bytes,7,rep,name=nodeSelector"`
+
+	NodeName string `json:"nodeName,omitempty" protobuf:"bytes,10,opt,name=nodeName"`
+
+	PriorityClassName string `json:"priorityClassName,omitempty" protobuf:"bytes,24,opt,name=priorityClassName"`
+
+	Priority *int32 `json:"priority,omitempty" protobuf:"bytes,25,opt,name=priority"`
+
+	PreemptionPolicy *v1.PreemptionPolicy `json:"preemptionPolicy,omitempty" protobuf:"bytes,31,opt,name=preemptionPolicy"`
 }

@@ -17,10 +17,10 @@
 package reconciler
 
 import (
-	"fmt"
 	"github.com/go-logr/logr"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"log"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -31,7 +31,7 @@ import (
 func Configure(manager ctrl.Manager, reconcilers ...Reconciler) error {
 	ctx := NewContext(manager)
 	for _, r := range reconcilers {
-		fmt.Printf("configuring the reconciler: %T\n", r)
+		log.Printf("configuring the reconciler: %T\n", r)
 		if err := r.Configure(ctx); err != nil {
 			return err
 		}

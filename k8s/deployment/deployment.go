@@ -18,11 +18,11 @@ package deployment
 
 import (
 	"context"
-	"fmt"
 	v1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"log"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -50,7 +50,7 @@ func IsReady(client client.Client, namespace, name string, replicas int32) bool 
 		Name:      name,
 	}, dep)
 	if err != nil && !errors.IsNotFound(err) {
-		fmt.Printf("There was an error on probing for the deployment: %s\n", err)
+		log.Printf("There was an error on probing for the deployment: %s\n", err)
 	}
 	return err == nil && replicas == dep.Status.ReadyReplicas
 }

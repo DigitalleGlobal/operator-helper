@@ -22,18 +22,18 @@ import (
 )
 
 // New2 creates a new service
-func New2(namespace, name string, hasClusterIp bool,
+func New2(namespace, name string, hasClusterIP bool,
 	labels map[string]string, servicePorts []v12.ServicePort) *v12.Service {
-	if !hasClusterIp {
+	if !hasClusterIP {
 		labels["headless"] = "true"
 	}
-	clusterIp := ""
-	if !hasClusterIp {
-		clusterIp = v12.ClusterIPNone
+	clusterIP := ""
+	if !hasClusterIP {
+		clusterIP = v12.ClusterIPNone
 	}
 
 	return New(namespace, name, labels, v12.ServiceSpec{
-		ClusterIP: clusterIp,
+		ClusterIP: clusterIP,
 		Selector:  labels,
 		Ports:     servicePorts,
 	})

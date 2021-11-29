@@ -1,11 +1,9 @@
 module github.com/monimesl/operator-helper
 
-go 1.15
+go 1.16
 
 require (
 	github.com/go-logr/logr v0.4.0
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.48.1
-	github.com/prometheus-operator/prometheus-operator/pkg/client v0.48.1
 	k8s.io/api v0.21.1
 	k8s.io/apimachinery v0.21.1
 	k8s.io/client-go v0.21.1

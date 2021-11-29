@@ -93,12 +93,12 @@ func GetManagerParams(scheme *runtime.Scheme, operatorName, domainName string) (
 		LeaderElectionID:        fmt.Sprintf("leader-lock-65403bab.%s.%s", operatorName, domainName),
 	}
 	namespaces := NamespacesToWatch()
-	if len(namespaces) == 0 {
-		// watch all namespaces
+	switch {
+	case len(namespaces) == 0:
 		options.Namespace = ""
-	} else if len(namespaces) == 1 {
+	case len(namespaces) == 1:
 		options.Namespace = namespaces[0]
-	} else {
+	default:
 		options.NewCache = cache.MultiNamespacedCacheBuilder(namespaces)
 	}
 	options.CertDir = GetWebHookCertDir()

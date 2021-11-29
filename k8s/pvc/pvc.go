@@ -47,7 +47,7 @@ func ListAllWithMatchingLabels(cl client.Client, namespace string, labels map[st
 		MatchLabels: labels,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error on creating selector from label selector: %v", err)
+		return nil, fmt.Errorf("error on creating selector from label selector: %w", err)
 	}
 	list := &v1.PersistentVolumeClaimList{}
 	listOpts := &client.ListOptions{
