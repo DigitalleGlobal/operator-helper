@@ -23,6 +23,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/utils/env"
 	"log"
 	"os"
 	"path/filepath"
@@ -38,6 +39,7 @@ import (
 var logger logr.Logger
 var loggerOnce sync.Once
 
+var envOperatorHost = "K8S-OPERATOR_HOST"
 var envEnableWebHooks = "ENABLE_WEBHOOKS"
 var envWebHookCertificateDir = "WEBHOOK_CERTIFICATES_DIR"
 var envNamespacesToWatch = "NAMESPACES_TO_WATCH"
@@ -47,7 +49,7 @@ var envMetricsServerPort = "METRICS_SERVER_PORT"
 
 // RequireRootLogger get the root logger or panic if not yet created
 func RequireRootLogger() logr.Logger {
-	if logger == nil {
+	if logger.GetSink() == nil {
 		panic("requires GetLogger() to be called first")
 	}
 	return logger
@@ -56,9 +58,7 @@ func RequireRootLogger() logr.Logger {
 // GetLogger get the logger instance to use
 func GetLogger(operatorName string, opts ...zap.Opts) logr.Logger {
 	loggerOnce.Do(func() {
-		if len(opts) == 0 {
-			opts = append(opts, zap.UseDevMode(true))
-		}
+		opts = append([]zap.Opts{zap.UseDevMode(true)}, opts...)
 		logger = zap.New(opts...).WithName(operatorName)
 		ctrl.SetLogger(logger)
 	})
@@ -86,6 +86,7 @@ func GetManagerParams(scheme *runtime.Scheme, operatorName, domainName string) (
 	options := ctrl.Options{
 		Scheme:                  scheme,
 		Port:                    9443,
+		Host:                    env.GetString(envOperatorHost, ""),
 		MetricsBindAddress:      metricServerAddress(),
 		Logger:                  GetLogger(operatorName),
 		LeaderElection:          LeaderElectionEnabled(),

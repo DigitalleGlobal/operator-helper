@@ -95,9 +95,9 @@ type Probe struct {
 	TimeoutSeconds int32 `json:"timeoutSeconds"`
 }
 
-func (in *Probe) ToK8sProbe(handler v1.Handler) *v1.Probe {
+func (in *Probe) ToK8sProbe(handler v1.ProbeHandler) *v1.Probe {
 	return &v1.Probe{
-		Handler:             handler,
+		ProbeHandler:        handler,
 		InitialDelaySeconds: in.InitialDelaySeconds,
 		PeriodSeconds:       in.PeriodSeconds,
 		SuccessThreshold:    in.SuccessThreshold,
