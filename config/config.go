@@ -43,6 +43,7 @@ var loggerOnce sync.Once
 
 var envOperatorHost = "K8S-OPERATOR_HOST"
 var envEnableWebHooks = "ENABLE_WEBHOOKS"
+var envHealthProbeAddress = "K8S-HEALTH_PROBE_ADDRESS"
 var envWebHookCertificateDir = "WEBHOOK_CERTIFICATES_DIR"
 var envNamespacesToWatch = "NAMESPACES_TO_WATCH"
 var envEnableLeaderElection = "ENABLE_LEADER_ELECTION"
@@ -86,7 +87,8 @@ func RequireClientset() *kubernetes.Clientset {
 // GetManagerParams get the manager options to use
 func GetManagerParams(scheme *runtime.Scheme, operatorName, domainName string) (*rest.Config, ctrl.Options) {
 	options := ctrl.Options{
-		Scheme: scheme,
+		Scheme:                 scheme,
+		HealthProbeBindAddress: env.GetString(envHealthProbeAddress, ":8081"),
 		WebhookServer: webhook.NewServer(webhook.Options{
 			Host:    env.GetString(envOperatorHost, ""),
 			Port:    9443,
