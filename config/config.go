@@ -31,6 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
+	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"strconv"
 	"strings"
 	"sync"
@@ -84,25 +86,28 @@ func RequireClientset() *kubernetes.Clientset {
 // GetManagerParams get the manager options to use
 func GetManagerParams(scheme *runtime.Scheme, operatorName, domainName string) (*rest.Config, ctrl.Options) {
 	options := ctrl.Options{
-		Scheme:                  scheme,
-		Port:                    9443,
-		Host:                    env.GetString(envOperatorHost, ""),
-		MetricsBindAddress:      metricServerAddress(),
+		Scheme: scheme,
+		WebhookServer: webhook.NewServer(webhook.Options{
+			Host:    env.GetString(envOperatorHost, ""),
+			Port:    9443,
+			CertDir: GetWebHookCertDir(),
+		}),
+		Cache: cache.Options{},
+		Metrics: metricsserver.Options{
+			BindAddress: metricServerAddress(),
+		},
 		Logger:                  GetLogger(operatorName),
 		LeaderElection:          LeaderElectionEnabled(),
 		LeaderElectionNamespace: LeaderElectionNamespace(operatorName),
 		LeaderElectionID:        fmt.Sprintf("leader-lock-65403bab.%s.%s", operatorName, domainName),
 	}
-	namespaces := NamespacesToWatch()
-	switch {
-	case len(namespaces) == 0:
-		options.Namespace = ""
-	case len(namespaces) == 1:
-		options.Namespace = namespaces[0]
-	default:
-		options.NewCache = cache.MultiNamespacedCacheBuilder(namespaces)
+	if namespaces := NamespacesToWatch(); len(namespaces) > 0 {
+		defaultNamespaces := make(map[string]cache.Config)
+		for _, namespace := range namespaces {
+			defaultNamespaces[namespace] = cache.Config{}
+		}
+		options.Cache.DefaultNamespaces = defaultNamespaces
 	}
-	options.CertDir = GetWebHookCertDir()
 	return NewRestConfig(), options
 }
 

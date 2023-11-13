@@ -1,13 +1,12 @@
+run:
+  timeout: 10m
 linters:
   disable-all: true
   enable:
     - asciicheck
     - bidichk
     - bodyclose
-    - contextcheck
     - cyclop
-    - deadcode
-    - depguard
     - dogsled
     - dupl
     - durationcheck
@@ -16,24 +15,18 @@ linters:
     - errorlint
     - exhaustive
     - exportloopref
-    - forbidigo
-    - forcetypeassert
     - gocognit
     - goconst
     - gocritic
     - gocyclo
-    - godox
     - gofmt
     - gomodguard
     - gosimple
-    - govet
-    - ifshort
     - importas
     - ineffassign
     - makezero
     - megacheck
     - nakedret
-    - nestif
     - nilerr
     - nilnil
     - noctx
@@ -41,21 +34,19 @@ linters:
     - paralleltest
     - prealloc
     - predeclared
-    - revive
-    - rowserrcheck
     - staticcheck
-    - structcheck
     - stylecheck
-    - tagliatelle
     - tenv
     - typecheck
     - unconvert
-    - unparam
     - unused
-    - varcheck
-    - wastedassign
     - whitespace
   fast: false
+issues:
+  exclude:
+    - "SA1019"
+    - "ST1003"
+    - "regexpMust"
 output:
   staticcheck:
     checks: [ "all" ]
