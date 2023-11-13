@@ -17,7 +17,7 @@
 package pdb
 
 import (
-	"k8s.io/api/policy/v1beta1"
+	v1 "k8s.io/api/policy/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
@@ -42,17 +42,17 @@ type PodDisruptionBudgetSpec struct {
 	MaxUnavailable *intstr.IntOrString `json:"maxUnavailable,omitempty" protobuf:"bytes,3,opt,name=maxUnavailable"`
 }
 
-func (in *PodDisruptionBudgetSpec) NewPodDisruptionBudget(name, namespace string, selector metav1.LabelSelector) *v1beta1.PodDisruptionBudget {
-	return &v1beta1.PodDisruptionBudget{
+func (in *PodDisruptionBudgetSpec) NewPodDisruptionBudget(name, namespace string, selector metav1.LabelSelector) *v1.PodDisruptionBudget {
+	return &v1.PodDisruptionBudget{
 		TypeMeta: metav1.TypeMeta{
-			Kind:       "PodDisruptionBudgetSpec",
-			APIVersion: "policy/v1beta1",
+			Kind:       "PodDisruptionBudget",
+			APIVersion: "policy/v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Spec: v1beta1.PodDisruptionBudgetSpec{
+		Spec: v1.PodDisruptionBudgetSpec{
 			MinAvailable:   in.MinAvailable,
 			MaxUnavailable: in.MaxUnavailable,
 			Selector:       &selector,
